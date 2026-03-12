@@ -202,14 +202,6 @@ let arquivos = [];
 
 for(let file of filesInput){
 
-if(file.size > 100 * 1024 * 1024){
-
-alert("Vídeo muito grande. Máx 10MB");
-
-return;
-
-}
-
 let base64 = await toBase64(file);
 
 arquivos.push({
@@ -322,4 +314,5 @@ navigator.serviceWorker.register('sw.js');
 
 
 </html>
+
 
