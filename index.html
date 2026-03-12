@@ -194,26 +194,27 @@ document.getElementById("corrente2Box").style.display="block";
 
 async function enviar(){
 
-document.getElementById("btnEnviar").innerText="Enviando...";
+let formData = new FormData();
 
-let filesInput = document.getElementById("arquivos").files;
+let ordemServico = document.getElementById("ordemServico").value;
 
-let arquivos = [];
+formData.append("ordemServico", ordemServico);
 
-for(let file of filesInput){
+let files = document.getElementById("arquivos").files;
 
-let base64 = await toBase64(file);
-
-arquivos.push({
-
-name:file.name,
-type:file.type,
-data:base64.split(",")[1]
-
-});
-
+for(let file of files){
+formData.append("file", file);
 }
 
+fetch("https://script.google.com/macros/s/AKfycbzVRF9xYd3qVOD5c3hRWcB9uw2EKAPXg32v9B0ITIneCuNi5jabzvnA_4H4azuiUfR_-g/exec",{
+method:"POST",
+body:formData
+})
+.then(res=>res.text())
+.then(msg=>alert(msg));
+
+}
+  
 let dados = {
 
 ordemServico:Number(document.getElementById("ordemServico").value),
@@ -314,5 +315,6 @@ navigator.serviceWorker.register('sw.js');
 
 
 </html>
+
 
 
