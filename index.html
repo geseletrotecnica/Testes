@@ -192,24 +192,48 @@ document.getElementById("corrente2Box").style.display="block";
 
 }
 
-async function enviar(){
+async function enviar() {
+  // botão indica envio
+  let btn = document.getElementById("btnEnviar");
+  btn.disabled = true;
+  btn.innerText = "Enviando...";
 
-let filesInput = document.getElementById("arquivos").files;
+  let filesInput = document.getElementById("arquivos").files;
+  let ordemServico = document.getElementById("ordemServico").value;
+  let tecnico = document.getElementById("tecnico").value;
+  let equipamento = document.getElementById("equipamento").value;
+  let potencia = document.getElementById("potencia").value;
+  let pressaoMaxima = document.getElementById("pressaoMaxima").value;
 
-let arquivos = [];
+  // Cria FormData
+  let formData = new FormData();
+  formData.append("ordemServico", ordemServico);
+  formData.append("tecnico", tecnico);
+  formData.append("equipamento", equipamento);
+  formData.append("potencia", potencia);
+  formData.append("pressaoMaxima", pressaoMaxima);
 
-for(let file of filesInput){
+  // Adiciona todos os arquivos
+  for (let i = 0; i < filesInput.length; i++) {
+    formData.append("file" + i, filesInput[i]);
+  }
 
-let base64 = await toBase64(file);
-
-arquivos.push({
-
-name:file.name,
-type:file.type,
-data:base64.split(",")[1]
-
-});
-
+  // Envia via fetch direto para o Apps Script
+  fetch("https://script.google.com/macros/s/AKfycbzVRF9xYd3qVOD5c3hRWcB9uw2EKAPXg32v9B0ITIneCuNi5jabzvnA_4H4azuiUfR_-g/exec", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.text())
+  .then(msg => {
+    alert(msg);
+    btn.disabled = false;
+    btn.innerText = "Enviar Relatorio";
+  })
+  .catch(err => {
+    alert("Erro no envio: " + err);
+    btn.disabled = false;
+    btn.innerText = "Enviar Relatorio";
+  });
 }
 
 let dados = {
@@ -305,6 +329,7 @@ navigator.serviceWorker.register('sw.js');
 </body>
 
 </html>
+
 
 
 
