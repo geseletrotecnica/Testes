@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+
+<link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#1b5e20">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<link rel="icon" href="icon-192.png">
+
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+font-family:Arial;
+background:#f2f2f2;
+margin:0;
+padding:10px;
+}
+
+.container{
+max-width:500px;
+margin:auto;
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.15);
+}
+
+h2{text-align:center;}
+
+label{font-weight:bold;}
+
+input,select{
+width:100%;
+padding:12px;
+margin-top:5px;
+margin-bottom:12px;
+font-size:16px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+fieldset{
+margin-bottom:15px;
+padding:10px;
+}
+
+button{
+width:95%;
+padding:15px;
+font-size:18px;
+background:#1b5e20;
+color:white;
+border:none;
+border-radius:8px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Painel de Testes</h2>
+
+<label>Ordem de Servico</label>
+<input type="number" id="ordemServico">
+
+<label>Tecnico</label>
+
+<select id="tecnico">
+<option>Selecione</option>
+<option>Alberto</option>
+<option>Wanderson</option>
+<option>Souza</option>
+<option>Geovane</option>
+<option>Luciano</option>
+</select>
+
+<label>Equipamento</label>
+
+<select id="equipamento" onchange="ajustarCampos()">
+
+<option value="motor">Motor Eletrico</option>
+<option value="bomba">Bomba</option>
+
+</select>
+
+<label>Potencia</label>
+
+<select id="potencia">
+
+<option>0.25 cv</option>
+<option>0.33 cv</option>
+<option>0.50 cv</option>
+<option>0.75 cv</option>
+<option>1.0 cv</option>
+<option>1.5 cv</option>
+<option>2.0 cv</option>
+<option>3.0 cv</option>
+<option>4.0 cv</option>
+<option>5.0 cv</option>
+<option>6.0 cv</option>
+<option>7.5 cv</option>
+<option>10 cv</option>
+<option>15 cv</option>
+<option>20 cv</option>
+<option>25 cv</option>
+<option>30 cv</option>
+<option>40 cv</option>
+<option>50 cv</option>
+<option>60 cv</option>
+<option>75 cv</option>
+<option>100 cv</option>
+
+</select>
+
+<div id="pressaoMaximaBox">
+
+<label>Pressao Maxima</label>
+<input type="number" id="pressaoMaxima">
+
+</div>
+
+<fieldset id="corrente1Box">
+
+<legend>Corrente Eletrica 01</legend>
+
+<input type="number" id="c1f1" placeholder="Fase 1">
+<input type="number" id="c1f2" placeholder="Fase 2">
+<input type="number" id="c1f3" placeholder="Fase 3">
+
+</fieldset>
+
+<div id="pressaoOperacionalBox">
+
+<label>Pressao Operacional</label>
+<input type="number" id="pressaoOperacional">
+
+</div>
+
+<fieldset id="corrente2Box">
+
+<legend>Corrente Eletrica 02</legend>
+
+<input type="number" id="c2f1" placeholder="Fase 1">
+<input type="number" id="c2f2" placeholder="Fase 2">
+<input type="number" id="c2f3" placeholder="Fase 3">
+
+</fieldset>
+
+<label>Temperatura</label>
+<input type="number" id="temperatura">
+
+<label>Fotos e Videos</label>
+<input type="file" id="arquivos" multiple accept="image/*,video/*">
+
+<button onclick="enviar()">Enviar Relatorio</button>
+
+<button id="instalarApp" style="display:none;margin-top:10px;background:#0d47a1;">
+Instalar App
+</button>
+
+</div>
+
+<script>
+
+function ajustarCampos(){
+
+let equipamento = document.getElementById("equipamento").value;
+
+if(equipamento === "motor"){
+
+document.getElementById("pressaoMaximaBox").style.display="none";
+document.getElementById("pressaoOperacionalBox").style.display="none";
+document.getElementById("corrente2Box").style.display="none";
+
+}else{
+
+document.getElementById("pressaoMaximaBox").style.display="block";
+document.getElementById("pressaoOperacionalBox").style.display="block";
+document.getElementById("corrente2Box").style.display="block";
+
+}
+
+}
+
+async function enviar(){
+
+let filesInput = document.getElementById("arquivos").files;
+
+let arquivos = [];
+
+for(let file of filesInput){
+
+let base64 = await toBase64(file);
+
+arquivos.push({
+
+name:file.name,
+type:file.type,
+data:base64.split(",")[1]
+
+});
+
+}
+
+let dados = {
+
+ordemServico:Number(document.getElementById("ordemServico").value),
+
+tecnico:document.getElementById("tecnico").value,
+
+equipamento:document.getElementById("equipamento").value,
+
+potencia:document.getElementById("potencia").value,
+
+pressaoMaxima:document.getElementById("pressaoMaxima").value,
+
+c1f1:document.getElementById("c1f1").value,
+c1f2:document.getElementById("c1f2").value,
+c1f3:document.getElementById("c1f3").value,
+
+pressaoOperacional:document.getElementById("pressaoOperacional").value,
+
+c2f1:document.getElementById("c2f1").value,
+c2f2:document.getElementById("c2f2").value,
+c2f3:document.getElementById("c2f3").value,
+
+temperatura:document.getElementById("temperatura").value,
+
+arquivos:arquivos
+
+}
+
+fetch("https://script.google.com/macros/s/AKfycbzVRF9xYd3qVOD5c3hRWcB9uw2EKAPXg32v9B0ITIneCuNi5jabzvnA_4H4azuiUfR_-g/exec",{
+
+method:"POST",
+
+body:JSON.stringify(dados)
+
+})
+
+.then(()=>alert("Relatório enviado"))
+
+}
+
+function toBase64(file){
+
+return new Promise((resolve,reject)=>{
+
+let reader = new FileReader();
+
+reader.readAsDataURL(file);
+
+reader.onload = ()=>resolve(reader.result);
+
+reader.onerror = error => reject(error);
+
+});
+
+}
+
+ajustarCampos()
+
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e)=>{
+
+e.preventDefault();
+
+deferredPrompt = e;
+
+document.getElementById("instalarApp").style.display="block";
+
+});
+
+document.getElementById("instalarApp").addEventListener("click", ()=>{
+
+deferredPrompt.prompt();
+
+deferredPrompt.userChoice.then(()=>{
+
+deferredPrompt=null;
+
+});
+
+});
+
+if('serviceWorker' in navigator){
+
+navigator.serviceWorker.register('sw.js');
+
+}
+
+</script>
+
+</body>
+
+</html>
