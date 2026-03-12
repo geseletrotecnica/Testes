@@ -196,9 +196,8 @@ async function enviar(){
 
 let formData = new FormData();
 
-let ordemServico = document.getElementById("ordemServico").value;
-
-formData.append("ordemServico", ordemServico);
+formData.append("ordemServico", document.getElementById("ordemServico").value);
+formData.append("tecnico", document.getElementById("tecnico").value);
 
 let files = document.getElementById("arquivos").files;
 
@@ -315,6 +314,7 @@ navigator.serviceWorker.register('sw.js');
 
 
 </html>
+
 
 
 
