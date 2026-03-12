@@ -193,7 +193,7 @@ document.getElementById("corrente2Box").style.display="block";
 }
 
 async function enviar() {
-  // botão indica envio
+  
   let btn = document.getElementById("btnEnviar");
   btn.disabled = true;
   btn.innerText = "Enviando...";
@@ -205,7 +205,6 @@ async function enviar() {
   let potencia = document.getElementById("potencia").value;
   let pressaoMaxima = document.getElementById("pressaoMaxima").value;
 
-  // Cria FormData
   let formData = new FormData();
   formData.append("ordemServico", ordemServico);
   formData.append("tecnico", tecnico);
@@ -213,12 +212,10 @@ async function enviar() {
   formData.append("potencia", potencia);
   formData.append("pressaoMaxima", pressaoMaxima);
 
-  // Adiciona todos os arquivos
   for (let i = 0; i < filesInput.length; i++) {
     formData.append("file" + i, filesInput[i]);
   }
 
-  // Envia via fetch direto para o Apps Script
   fetch("https://script.google.com/macros/s/AKfycbzVRF9xYd3qVOD5c3hRWcB9uw2EKAPXg32v9B0ITIneCuNi5jabzvnA_4H4azuiUfR_-g/exec", {
     method: "POST",
     body: formData
@@ -329,6 +326,7 @@ navigator.serviceWorker.register('sw.js');
 </body>
 
 </html>
+
 
 
 
