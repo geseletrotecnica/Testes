@@ -162,7 +162,7 @@ border-radius:8px;
 <label>Fotos e Videos</label>
 <input type="file" id="arquivos" multiple accept="image/*,video/*">
 
-<button onclick="enviar()">Enviar Relatorio</button>
+<button id="btnEnviar" onclick="enviar()">Enviar Relatorio</button>
 
 <button id="instalarApp" style="display:none;margin-top:10px;background:#0d47a1;">
 Instalar App
@@ -194,11 +194,21 @@ document.getElementById("corrente2Box").style.display="block";
 
 async function enviar(){
 
+document.getElementById("btnEnviar").innerText="Enviando...";
+
 let filesInput = document.getElementById("arquivos").files;
 
 let arquivos = [];
 
 for(let file of filesInput){
+
+if(file.size > 10 * 1024 * 1024){
+
+alert("Vídeo muito grande. Máx 10MB");
+
+return;
+
+}
 
 let base64 = await toBase64(file);
 
@@ -248,7 +258,13 @@ body:JSON.stringify(dados)
 
 })
 
-.then(()=>alert("Relatório enviado"))
+.then(()=>{
+
+alert("Relatório enviado");
+
+document.getElementById("btnEnviar").innerText="Enviar Relatorio";
+
+});
 
 }
 
@@ -303,5 +319,6 @@ navigator.serviceWorker.register('sw.js');
 </script>
 
 </body>
+
 
 </html>
